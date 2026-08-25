@@ -1,0 +1,234 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+* {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+body {
+  background: #0B0F19;
+  color: white;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Основной фон и шрифт */
+.main-bg {
+  @apply min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white font-sans;
+}
+
+.container-main {
+  @apply max-w-7xl mx-auto px-6;
+}
+
+/* Заголовки и текст */
+.hero-title {
+  @apply text-5xl md:text-7xl font-black leading-tight;
+}
+
+.grad-text {
+  @apply text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500;
+}
+
+.hero-subtitle {
+  @apply mt-4 text-xl text-gray-300;
+}
+
+.section-title {
+  @apply text-4xl font-bold mb-10;
+}
+
+.text-center {
+  @apply text-center;
+}
+
+/* Кнопки */
+.btn-primary {
+  @apply px-8 py-4 bg-yellow-400 text-black font-bold rounded-full hover:bg-yellow-300 transition-all shadow-lg shadow-yellow-500/30;
+}
+
+.btn-outline {
+  @apply px-8 py-4 border border-white/30 rounded-full hover:bg-white/10 transition-all;
+}
+
+.btn-green {
+  @apply mt-6 px-8 py-3 bg-green-500 rounded-full font-bold hover:bg-green-400;
+}
+
+.btn-cta {
+  @apply mt-6 px-12 py-5 bg-gradient-to-r from-cyan-500 to-green-500 rounded-full text-xl font-bold hover:opacity-90 transition-opacity;
+}
+
+/* Стеклянные карточки */
+.glass-card {
+  @apply bg-white/10 backdrop-blur-lg border border-white/20 shadow-xl rounded-2xl;
+}
+
+/* Секции */
+.hero-section {
+  @apply py-20 grid md:grid-cols-2 gap-10 items-center;
+}
+
+.section-block {
+  @apply py-20;
+}
+
+.border-section {
+  @apply border-y border-white/10;
+}
+
+.pricing-bg {
+  @apply bg-white/10;
+}
+
+/* Hero визуал */
+.hero-visual {
+  @apply p-10 relative overflow-hidden;
+}
+
+.hero-icon-top {
+  @apply absolute top-5 right-5 text-yellow-400;
+}
+
+.hero-icon-bottom {
+  @apply absolute bottom-5 left-5 text-cyan-400;
+}
+
+.hero-logo {
+  @apply text-center text-4xl font-bold;
+}
+
+.hero-address {
+  @apply text-center mt-2 text-sm text-gray-300;
+}
+
+/* Преимущества */
+.features-grid {
+  @apply grid md:grid-cols-4 gap-6;
+}
+
+.feature-card {
+  @apply p-6 hover:scale-105 transition-transform;
+}
+
+.feature-number {
+  @apply text-3xl font-bold text-yellow-400;
+}
+
+.feature-title {
+  @apply mt-4 text-xl font-bold;
+}
+
+.feature-desc {
+  @apply mt-2 text-gray-400;
+}
+
+/* Список занятий */
+.feature-list {
+  @apply space-y-4 text-xl;
+}
+
+/* Цифры и предметы */
+.stats-grid {
+  @apply grid grid-cols-3 gap-10;
+}
+
+.stat-number {
+  @apply text-6xl font-black;
+}
+
+.stat-label {
+  @apply text-gray-400;
+}
+
+.subjects-grid {
+  @apply grid md:grid-cols-3 gap-6 mt-16;
+}
+
+.subject-card {
+  @apply p-6 rounded-xl border;
+}
+
+.subject-yellow {
+  @apply bg-yellow-500/10 border-yellow-500/30;
+}
+
+.subject-green {
+  @apply bg-green-500/10 border-green-500/30;
+}
+
+.subject-blue {
+  @apply bg-blue-500/10 border-blue-500/30;
+}
+
+.subject-icon {
+  @apply text-4xl font-bold;
+}
+
+.subject-yellow .subject-icon {
+  @apply text-yellow-400;
+}
+
+.subject-green .subject-icon {
+  @apply text-green-400;
+}
+
+.subject-blue .subject-icon {
+  @apply text-blue-400;
+}
+
+/* Цены */
+.pricing-grid {
+  @apply max-w-4xl mx-auto grid md:grid-cols-2;
+}
+
+.pricing-card {
+  @apply p-10 text-center;
+}
+
+.pricing-left {
+  @apply border-r-0 rounded-r-none;
+}
+
+.pricing-right {
+  @apply rounded-l-none;
+}
+
+.discount-amount {
+  @apply text-6xl font-black text-yellow-400;
+}
+
+.old-price {
+  @apply text-3xl text-gray-400 line-through;
+}
+
+.new-price {
+  @apply text-5xl font-black text-green-400;
+}
+
+/* Контакты и CTA */
+.cta-title {
+  @apply text-5xl font-black leading-tight;
+}
+
+.grad-text-cyan-green {
+  @apply text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-green-400;
+}
+
+.contacts {
+  @apply mt-10 flex flex-col items-center gap-4;
+}
+
+.contact-item {
+  @apply flex items-center gap-2;
+}
+
+.phone-item {
+  @apply text-2xl font-bold flex items-center gap-2;
+}
