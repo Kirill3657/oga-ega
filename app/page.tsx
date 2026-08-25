@@ -274,7 +274,7 @@ export default function LandingPage() {
           <p className="flex items-center gap-2 text-xl"><MapPin className="text-yellow-400" /> г. Энгельс, ул. Тельмана 14а</p>
           <p className="text-gray-400">Детский центр "Учи.ру"</p>
           <p className="text-3xl font-bold flex items-center gap-2"><Phone className="text-green-400" /> +7 (927)-161-98-04</p>
-          <a href="tel:+79271619804" className="btn-cta">
+          <a href="tel:+79869881766" className="btn-cta">
             Записаться на бесплатное занятие
           </a>
         </motion.div>
