@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
+import https from 'https';
 
 export async function POST(request: Request) {
   try {
     const { name, phone, message } = await request.json();
 
-    // Читаем переменные окружения
     const token = process.env.MAX_BOT_TOKEN;
     const chatId = process.env.MAX_CHAT_ID;
 
@@ -13,25 +13,28 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: 'Настройки MAX не найдены' }, { status: 500 });
     }
 
-    // Формируем текст
+    // Создаем агента, который пропускает ошибки сертификатов
+    const agent = new https.Agent({ rejectUnauthorized: false });
+
     const text = `🆕 Новая заявка!\n\n👤 Имя: ${name}\n📞 Телефон: ${phone}\n📝 Комментарий: ${message || 'Нет'}`;
 
-    // Отправляем в MAX
     const response = await fetch('https://platform-api2.max.ru/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token, // Токен без Bearer
+        'Authorization': token,
       },
       body: JSON.stringify({
         chat_id: chatId,
         text: text,
       }),
+      // @ts-ignore
+      agent: agent
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Ошибка MAX API:', errorText);
+      console.error('Ошибка MAX API:', response.status, errorText);
       return NextResponse.json({ ok: false, error: 'MAX API error' }, { status: 500 });
     }
 
