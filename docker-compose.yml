@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: oga-api
+    ports:
+      - "8080:8080"
+    environment:
+      # Передаём секреты сюда
+      - MAX_BOT_TOKEN=${MAX_BOT_TOKEN}
+      - MAX_CHAT_ID=${MAX_CHAT_ID}
+    restart: unless-stopped
