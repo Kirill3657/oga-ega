@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import https from 'https';
 
+export const runtime = 'nodejs';
+
 const rootCa = `-----BEGIN CERTIFICATE-----
 MIIFwjCCA6qgAwIBAgICEAAwDQYJKoZIhvcNAQELBQAwcDELMAkGA1UEBhMCUlUx
 PzA9BgNVBAoMNlRoZSBNaW5pc3RyeSBvZiBEaWdpdGFsIERldmVsb3BtZW50IGFu
