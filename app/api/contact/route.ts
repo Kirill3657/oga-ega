@@ -13,7 +13,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: 'Настройки MAX не найдены' }, { status: 500 });
     }
 
-    // Создаем агента, который пропускает ошибки сертификатов
+    // Создаем агента, который пропускает ошибки сертификатов (для Минцифры)
     const agent = new https.Agent({ rejectUnauthorized: false });
 
     const text = `🆕 Новая заявка!\n\n👤 Имя: ${name}\n📞 Телефон: ${phone}\n📝 Комментарий: ${message || 'Нет'}`;
@@ -22,14 +22,14 @@ export async function POST(request: Request) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token,
+        'Authorization': token, // токен без Bearer
       },
       body: JSON.stringify({
         chat_id: chatId,
         text: text,
       }),
-      // @ts-ignore
-      agent: agent
+      // @ts-ignore - чтобы TypeScript не ругался на agent
+      agent: agent,
     });
 
     if (!response.ok) {
