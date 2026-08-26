@@ -3,6 +3,7 @@
 import { motion, Variants } from "framer-motion";
 import { MapPin, Phone, Zap, Fingerprint } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
 
 const fadeIn: Variants = {
   hidden: { opacity: 0, y: 40 },
@@ -14,6 +15,37 @@ const fadeIn: Variants = {
 };
 
 export default function LandingPage() {
+  const [formState, setFormState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    setFormState('loading');
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.get('name'),
+          phone: formData.get('phone'),
+          message: formData.get('message'),
+        }),
+      });
+
+      if (res.ok) {
+        setFormState('success');
+        form.reset();
+      } else {
+        setFormState('error');
+      }
+    } catch (error) {
+      console.error('Ошибка отправки:', error);
+      setFormState('error');
+    }
+  }
+
   return (
     <main className="min-h-screen bg-[#0B0F19] text-white font-sans overflow-x-hidden">
       
@@ -40,11 +72,9 @@ export default function LandingPage() {
               Учи.ру — твой путь к максимальным баллам!
             </motion.p>
             <motion.div className="mt-8 flex flex-col sm:flex-row gap-4" variants={fadeIn} custom={2}>
-              {/* Ссылка на звонок */}
               <a href="#contacts" className="btn-primary">
                 Записаться
               </a>
-              {/* Якорь на преимущества */}
               <a href="#advantages" className="btn-outline">
                 Узнать больше
               </a>
@@ -252,7 +282,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Контакты */}
+      {/* Контакты с формой */}
       <section id="contacts" className="py-12 sm:py-24 text-center">
         <motion.h2 
           className="text-3xl sm:text-4xl md:text-6xl font-black leading-tight px-4 sm:px-6"
@@ -273,9 +303,37 @@ export default function LandingPage() {
           <p className="flex items-center gap-2 text-base sm:text-xl"><MapPin className="text-yellow-400" /> г. Энгельс, ул. Тельмана 14а</p>
           <p className="text-gray-400 text-sm sm:text-base">Детский центр "Учи.ру"</p>
           <p className="text-2xl sm:text-3xl font-bold flex items-center gap-2"><Phone className="text-green-400" /> +7 (927)-161-98-04</p>
-          <a href="tel:+79869881766" className="btn-cta">
-            Записаться на бесплатное занятие
-          </a>
+          
+          {/* Форма записи */}
+          <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4 max-w-md w-full mx-auto">
+            <input 
+              name="name" 
+              type="text" 
+              placeholder="Ваше имя" 
+              required 
+              className="px-5 py-3 bg-white/10 border border-white/20 rounded-full text-white placeholder-gray-400 outline-none focus:border-cyan-400 transition-colors" 
+            />
+            <input 
+              name="phone" 
+              type="tel" 
+              placeholder="Номер телефона" 
+              required 
+              className="px-5 py-3 bg-white/10 border border-white/20 rounded-full text-white placeholder-gray-400 outline-none focus:border-cyan-400 transition-colors" 
+            />
+            <input 
+              name="message" 
+              type="text" 
+              placeholder="Комментарий (необязательно)" 
+              className="px-5 py-3 bg-white/10 border border-white/20 rounded-full text-white placeholder-gray-400 outline-none focus:border-cyan-400 transition-colors" 
+            />
+            
+            <button type="submit" disabled={formState === 'loading'} className="btn-cta disabled:opacity-60 disabled:cursor-not-allowed">
+              {formState === 'loading' ? 'Отправка...' : 'Записаться на занятие'}
+            </button>
+            
+            {formState === 'success' && <p className="text-green-400 text-center">Заявка отправлена! Мы скоро свяжемся с вами.</p>}
+            {formState === 'error' && <p className="text-red-400 text-center">Ошибка отправки. Попробуйте ещё раз или позвоните нам.</p>}
+          </form>
         </motion.div>
       </section>
     </main>
