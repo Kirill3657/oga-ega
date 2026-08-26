@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
-import https from 'https';
+
+// Глобально отключаем проверку SSL (для сертификатов Минцифры)
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 export async function POST(request: Request) {
   try {
@@ -13,9 +15,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: 'Настройки MAX не найдены' }, { status: 500 });
     }
 
-    // Создаем агента, который пропускает ошибки сертификатов (для Минцифры)
-    const agent = new https.Agent({ rejectUnauthorized: false });
-
     const text = `🆕 Новая заявка!\n\n👤 Имя: ${name}\n📞 Телефон: ${phone}\n📝 Комментарий: ${message || 'Нет'}`;
 
     const response = await fetch('https://platform-api2.max.ru/messages', {
@@ -28,8 +27,6 @@ export async function POST(request: Request) {
         chat_id: chatId,
         text: text,
       }),
-      // @ts-ignore - чтобы TypeScript не ругался на agent
-      agent: agent,
     });
 
     if (!response.ok) {
