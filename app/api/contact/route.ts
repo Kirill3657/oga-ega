@@ -22,8 +22,8 @@ export async function POST(request: Request) {
     // 2. Считываем содержимое сертификатов из файлов.
     // Файлы должны быть в текстовом формате PEM (Base64).
     // Если файл не найден или бинарный, код упадет с ошибкой, и мы это увидим в логах.
-    const rootCa = fs.readFileSync(path.join(certDir, 'russian_trusted_root_ca.crt'));
-    const subCa = fs.readFileSync(path.join(certDir, 'russian_trusted_sub_ca.crt'));
+    const rootCa = fs.readFileSync(path.join(certDir, 'russian_trusted_root_ca.pem'));
+    const subCa = fs.readFileSync(path.join(certDir, 'russian_trusted_sub_ca.pem'));
 
     // 3. Создаем специального агента (Agent) для Node.js.
     // Мы передаем ему массив доверенных сертификатов (массив Buffer'ов).
