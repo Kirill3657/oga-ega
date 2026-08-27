@@ -36,6 +36,61 @@ function Counter({ target, label }: { target: number; label: string }) {
   );
 }
 
+// Компонент "Строители"
+function BuildersAnimation() {
+  return (
+    <div className="relative flex flex-col items-center justify-center h-64 w-full max-w-md mx-auto mt-8">
+      {/* Стопка блоков */}
+      <motion.div
+        className="flex flex-col items-center gap-1"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={{
+          hidden: {},
+          visible: { transition: { staggerChildren: 0.3 } },
+        }}
+      >
+        {[1, 2, 3, 4].map((_, i) => (
+          <motion.div
+            key={i}
+            className="w-24 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-md shadow-lg"
+            variants={{
+              hidden: { opacity: 0, y: -20 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+            }}
+          />
+        ))}
+      </motion.div>
+
+      {/* Строители (человечки) */}
+      <motion.div
+        className="absolute bottom-0 flex gap-6"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        transition={{ delay: 1.5, duration: 0.5 }}
+      >
+        {[0, 1, 2].map((i) => (
+          <motion.div
+            key={i}
+            className="flex flex-col items-center"
+            animate={{ y: [0, -10, 0] }}
+            transition={{ repeat: Infinity, duration: 0.8, delay: i * 0.2 }}
+          >
+            {/* Тело */}
+            <div className="w-6 h-10 bg-yellow-400 rounded-t-lg rounded-b-md" />
+            {/* Голова */}
+            <div className="w-8 h-8 bg-orange-300 rounded-full -mt-2" />
+            {/* Каска */}
+            <div className="w-10 h-3 bg-yellow-600 rounded-full -mt-2" />
+          </motion.div>
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
 // Обработчик отправки формы
 async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
   e.preventDefault();
@@ -114,6 +169,9 @@ export default function LandingPage() {
           </motion.div>
         </motion.div>
       </section>
+
+      {/* СТРОИТЕЛИ */}
+      <BuildersAnimation />
 
       {/* МИССИЯ И ЦИФРЫ */}
       <section className="py-24 bg-[#0F1523]">
