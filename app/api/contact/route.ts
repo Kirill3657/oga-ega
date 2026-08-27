@@ -17,8 +17,8 @@ export async function POST(request: Request) {
     const { data, error } = await resend.emails.send({
       // Важно: Если у вас нет своего домена, используйте onboarding@resend.dev для теста
       // Если у вас есть верифицированный домен (например, ваш-домен.ру), укажите его здесь
-      from: 'Учи.ру <onboarding@resend.dev>', 
-      to: ['почта-заказчика@example.com'], // Замените на реальную почту заказчика!
+      from: 'Учи.ру <zayavki@resend.dev>', 
+      to: ['wwwkirillstarcraft@gmail.com'], // Замените на реальную почту заказчика!
       subject: 'Новая заявка с сайта',
       replyTo: 'onboarding@resend.dev', // Куда отвечать клиенту (можно оставить как есть)
       html: `
