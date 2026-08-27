@@ -375,8 +375,8 @@ export default function LandingPage() {
           </motion.h2>
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {[
-              { name: "Мигунова Анастасия", role: "Учитель информатики", img: "/images/teacher-1.avif" },
-              { name: "Ковалева Аманда Антоновна", role: "Преподаватель русского и математики", img: "/images/teacher-2.avif" },
+              { name: "Мигунова Анастасия", role: "Учитель информатики", img: "/images/teacher1.jpg" },
+              { name: "Ковалева Аманда Антоновна", role: "Преподаватель русского и математики", img: "/images/teacher2.jpg" },
             ].map((teacher, i) => (
               <motion.div
                 key={i}
