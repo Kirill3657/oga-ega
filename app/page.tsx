@@ -1,9 +1,9 @@
 "use client";
 
+import { motion, useInView, Variants } from "framer-motion";
 import { MapPin, Phone, Zap, Fingerprint, Users, Trophy, Rocket, Star, BookOpen, Code, Brain } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView, Variants } from "framer-motion";
 
 const fadeIn = (delay: number): Variants => ({
   hidden: { opacity: 0, y: 40 },
@@ -14,7 +14,6 @@ const fadeIn = (delay: number): Variants => ({
   },
 });
 
-// Счётчик с использованием useInView из framer-motion
 function Counter({ target, label }: { target: number; label: string }) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
@@ -37,10 +36,49 @@ function Counter({ target, label }: { target: number; label: string }) {
   );
 }
 
+// Обработчик отправки формы
+async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  e.preventDefault();
+  const form = e.currentTarget;
+  const formData = new FormData(form);
+  const statusEl = form.querySelector("#form-status");
+  if (statusEl) statusEl.textContent = "Отправка...";
+
+  try {
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: formData.get("name"),
+        phone: formData.get("phone"),
+        message: formData.get("message"),
+      }),
+    });
+
+    if (res.ok) {
+      form.reset();
+      if (statusEl) {
+        statusEl.textContent = "Заявка отправлена!";
+        statusEl.className = "text-green-400 text-center";
+      }
+    } else {
+      if (statusEl) {
+        statusEl.textContent = "Ошибка. Попробуйте ещё раз.";
+        statusEl.className = "text-red-400 text-center";
+      }
+    }
+  } catch {
+    if (statusEl) {
+      statusEl.textContent = "Ошибка. Попробуйте ещё раз.";
+      statusEl.className = "text-red-400 text-center";
+    }
+  }
+}
+
 export default function LandingPage() {
   return (
     <main className="min-h-screen bg-[#0B0F19] text-white font-sans overflow-x-hidden">
-      {/* ---------- HERO ---------- */}
+      {/* HERO */}
       <section className="relative min-h-screen flex items-center justify-center py-20 px-6">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/20 blur-[120px] rounded-full pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/20 blur-[120px] rounded-full pointer-events-none" />
@@ -77,7 +115,7 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
-      {/* ---------- МИССИЯ И ЦИФРЫ ---------- */}
+      {/* МИССИЯ И ЦИФРЫ */}
       <section className="py-24 bg-[#0F1523]">
         <div className="container mx-auto px-6">
           <motion.h2
@@ -108,7 +146,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ---------- ПРЕИМУЩЕСТВА ---------- */}
+      {/* ПРЕИМУЩЕСТВА */}
       <section id="advantages" className="py-24">
         <div className="container mx-auto px-6">
           <motion.h2
@@ -150,7 +188,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ---------- КАК ПРОХОДЯТ ЗАНЯТИЯ ---------- */}
+      {/* КАК ПРОХОДЯТ ЗАНЯТИЯ */}
       <section className="py-24 bg-[#0F1523]">
         <div className="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
           <motion.div
@@ -179,7 +217,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ---------- ПОЧЕМУ МЫ ---------- */}
+      {/* ПОЧЕМУ МЫ */}
       <section className="py-24">
         <div className="container mx-auto px-6">
           <motion.h2
@@ -214,7 +252,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ---------- ХАКАТОН (возвращён) ---------- */}
+      {/* ХАКАТОН */}
       <section className="py-24 bg-[#0F1523]">
         <div className="container mx-auto px-6">
           <motion.div
@@ -236,7 +274,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ---------- ПОДГОТОВКА К НТО ---------- */}
+      {/* ПОДГОТОВКА К НТО */}
       <section className="py-24">
         <div className="container mx-auto px-6">
           <motion.h2
@@ -271,7 +309,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ---------- ПРЕПОДАВАТЕЛИ ---------- */}
+      {/* ПРЕПОДАВАТЕЛИ */}
       <section className="py-24 bg-[#0F1523]">
         <div className="container mx-auto px-6">
           <motion.h2
@@ -313,7 +351,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ---------- ЦЕНЫ ---------- */}
+      {/* ЦЕНЫ */}
       <section className="py-24">
         <div className="container mx-auto px-6">
           <motion.h2
@@ -352,7 +390,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ---------- КОНТАКТЫ ---------- */}
+      {/* КОНТАКТЫ + ФОРМА */}
       <section id="contacts" className="py-24 text-center">
         <motion.h2
           className="text-4xl md:text-6xl font-black leading-tight px-4"
@@ -375,7 +413,32 @@ export default function LandingPage() {
           <p className="flex items-center gap-2 text-xl"><MapPin className="text-yellow-400" /> г. Энгельс, ул. Тельмана 14а</p>
           <p className="text-gray-400">Детский центр "Учи.ру"</p>
           <p className="text-2xl font-bold flex items-center gap-2"><Phone className="text-green-400" /> +7 (927)-161-98-04</p>
-          <a href="tel:+79869881766" className="btn-cta">Записаться на бесплатное занятие</a>
+
+          {/* ФОРМА ЗАЯВКИ */}
+          <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4 max-w-md w-full mx-auto">
+            <input
+              name="name"
+              type="text"
+              placeholder="Ваше имя"
+              required
+              className="px-5 py-3 bg-white/10 border border-white/20 rounded-full text-white placeholder-gray-400 outline-none focus:border-cyan-400 transition-colors"
+            />
+            <input
+              name="phone"
+              type="tel"
+              placeholder="Номер телефона"
+              required
+              className="px-5 py-3 bg-white/10 border border-white/20 rounded-full text-white placeholder-gray-400 outline-none focus:border-cyan-400 transition-colors"
+            />
+            <input
+              name="message"
+              type="text"
+              placeholder="Комментарий (необязательно)"
+              className="px-5 py-3 bg-white/10 border border-white/20 rounded-full text-white placeholder-gray-400 outline-none focus:border-cyan-400 transition-colors"
+            />
+            <button type="submit" className="btn-cta">Записаться на бесплатное занятие</button>
+            <div id="form-status" className="text-center"></div>
+          </form>
         </motion.div>
       </section>
     </main>
