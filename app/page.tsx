@@ -36,47 +36,32 @@ function Counter({ target, label }: { target: number; label: string }) {
   );
 }
 
-// Компонент "Строители"
+// Компонент "Строители с молотками"
 function BuildersAnimation() {
   return (
-    <div className="relative flex flex-col items-center justify-center h-64 w-full max-w-md mx-auto mt-8">
-      {/* Стопка блоков */}
-      <motion.div
-        className="flex flex-col items-center gap-1"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={{
-          hidden: {},
-          visible: { transition: { staggerChildren: 0.3 } },
-        }}
-      >
-        {[1, 2, 3, 4].map((_, i) => (
+    <div className="relative flex items-end justify-center h-64 w-full max-w-md mx-auto mt-8">
+      {/* Строящаяся стена */}
+      <div className="flex flex-col-reverse items-center gap-1">
+        {[1, 2, 3, 4, 5].map((_, i) => (
           <motion.div
             key={i}
             className="w-24 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-md shadow-lg"
-            variants={{
-              hidden: { opacity: 0, y: -20 },
-              visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
-            }}
+            initial={{ opacity: 0, y: -20, scaleY: 0 }}
+            animate={{ opacity: 1, y: 0, scaleY: 1 }}
+            transition={{ delay: i * 0.4, duration: 0.4, ease: "easeOut" }}
           />
         ))}
-      </motion.div>
+      </div>
 
-      {/* Строители (человечки) */}
-      <motion.div
-        className="absolute bottom-0 flex gap-6"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        transition={{ delay: 1.5, duration: 0.5 }}
-      >
+      {/* Строители */}
+      <div className="absolute bottom-0 left-0 right-0 flex justify-center gap-8">
         {[0, 1, 2].map((i) => (
           <motion.div
             key={i}
             className="flex flex-col items-center"
-            animate={{ y: [0, -10, 0] }}
-            transition={{ repeat: Infinity, duration: 0.8, delay: i * 0.2 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1 + i * 0.2 }}
           >
             {/* Тело */}
             <div className="w-6 h-10 bg-yellow-400 rounded-t-lg rounded-b-md" />
@@ -84,9 +69,18 @@ function BuildersAnimation() {
             <div className="w-8 h-8 bg-orange-300 rounded-full -mt-2" />
             {/* Каска */}
             <div className="w-10 h-3 bg-yellow-600 rounded-full -mt-2" />
+            {/* Рука с молотком */}
+            <motion.div
+              className="absolute -top-4 right-0 w-2 h-6 bg-yellow-700 origin-bottom"
+              animate={{ rotate: [0, -30, 0] }}
+              transition={{ repeat: Infinity, duration: 0.6, delay: i * 0.3 }}
+            >
+              {/* Молоток */}
+              <div className="absolute -top-1 right-0 w-8 h-3 bg-gray-400 rounded-sm" />
+            </motion.div>
           </motion.div>
         ))}
-      </motion.div>
+      </div>
     </div>
   );
 }
