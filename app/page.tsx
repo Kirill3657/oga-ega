@@ -199,7 +199,7 @@ export default function LandingPage() {
             <h2 className="text-4xl md:text-5xl font-black mb-8">Формат, который действительно работает</h2>
             <div className="space-y-6 text-xl text-gray-300">
               <p>Занятия проходят <span className="text-yellow-400 font-bold">раз в неделю по 2 часа</span>. Преподаватели сами недавно сдавали экзамены, поэтому подготовка идёт «на языке» ребёнка.</p>
-              <p>Ведём подготовку по <span className="text-cyan-400 font-bold">математике, русскому и информатике</span>.</p>
+              <p>Ведём подготовку по <span className="text-cyan-400 font-bold">математике, русскому языку и информатике</span>.</p>
               <p>У нас <span className="text-green-400 font-bold">микро-группы до 10 человек</span> — это позволяет ребёнку усваивать материал в умеренном темпе, а преподаватель подходит к каждому ученику индивидуально.</p>
             </div>
           </motion.div>
