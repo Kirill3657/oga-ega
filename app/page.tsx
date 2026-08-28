@@ -163,7 +163,6 @@ export default function LandingPage() {
               { title: "До 10 баллов к ЕГЭ", desc: "Дополнительные баллы", img: "/images/advantage0.avif" },
               { title: "Преподаватели", desc: "Недавние выпускники", img: "/images/advantage1.avif" },
               { title: "Методики Москвы", desc: "Лучшего учебного центра", img: "/images/advantage2.avif" },
-              { title: "Партнерства", desc: "С вузами и компаниями", img: "/images/advantage3.avif" },
             ].map((item, i) => (
               <motion.div
                 key={i}
