@@ -36,55 +36,6 @@ function Counter({ target, label }: { target: number; label: string }) {
   );
 }
 
-// Компонент "Строители с молотками"
-function BuildersAnimation() {
-  return (
-    <div className="relative flex items-end justify-center h-64 w-full max-w-md mx-auto mt-8">
-      {/* Строящаяся стена */}
-      <div className="flex flex-col-reverse items-center gap-1">
-        {[1, 2, 3, 4, 5].map((_, i) => (
-          <motion.div
-            key={i}
-            className="w-24 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-md shadow-lg"
-            initial={{ opacity: 0, y: -20, scaleY: 0 }}
-            animate={{ opacity: 1, y: 0, scaleY: 1 }}
-            transition={{ delay: i * 0.4, duration: 0.4, ease: "easeOut" }}
-          />
-        ))}
-      </div>
-
-      {/* Строители */}
-      <div className="absolute bottom-0 left-0 right-0 flex justify-center gap-8">
-        {[0, 1, 2].map((i) => (
-          <motion.div
-            key={i}
-            className="flex flex-col items-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1 + i * 0.2 }}
-          >
-            {/* Тело */}
-            <div className="w-6 h-10 bg-yellow-400 rounded-t-lg rounded-b-md" />
-            {/* Голова */}
-            <div className="w-8 h-8 bg-orange-300 rounded-full -mt-2" />
-            {/* Каска */}
-            <div className="w-10 h-3 bg-yellow-600 rounded-full -mt-2" />
-            {/* Рука с молотком */}
-            <motion.div
-              className="absolute -top-4 right-0 w-2 h-6 bg-yellow-700 origin-bottom"
-              animate={{ rotate: [0, -30, 0] }}
-              transition={{ repeat: Infinity, duration: 0.6, delay: i * 0.3 }}
-            >
-              {/* Молоток */}
-              <div className="absolute -top-1 right-0 w-8 h-3 bg-gray-400 rounded-sm" />
-            </motion.div>
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 // Обработчик отправки формы
 async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
   e.preventDefault();
@@ -163,9 +114,6 @@ export default function LandingPage() {
           </motion.div>
         </motion.div>
       </section>
-
-      {/* СТРОИТЕЛИ */}
-      <BuildersAnimation />
 
       {/* МИССИЯ И ЦИФРЫ */}
       <section className="py-24 bg-[#0F1523]">
@@ -375,8 +323,8 @@ export default function LandingPage() {
           </motion.h2>
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {[
-              { name: "Мигунова Анастасия", role: "Учитель информатики", img: "/images/teacher1.jpg" },
-              { name: "Ковалева Аманда", role: "Преподаватель русского и математики", img: "/images/teacher2.jpg" },
+              { name: "Мигунова Анастасия", role: "Учитель информатики", img: "/images/teacher-1.avif" },
+              { name: "Ковалева Аманда Антоновна", role: "Преподаватель русского и математики", img: "/images/teacher-2.avif" },
             ].map((teacher, i) => (
               <motion.div
                 key={i}
