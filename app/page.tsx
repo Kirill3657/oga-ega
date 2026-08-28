@@ -274,41 +274,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ПОДГОТОВКА К НТО */}
-      <section className="py-24">
-        <div className="container mx-auto px-6">
-          <motion.h2
-            className="text-4xl md:text-5xl font-black text-center mb-12"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeIn(0)}
-          >
-            Подготовка к <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Национальной технологической олимпиаде</span>
-          </motion.h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { icon: <Code className="w-10 h-10 text-blue-400" />, title: "IT и программирование", text: "Учим решать инженерные задачи, работать с данными и создавать собственные проекты." },
-              { icon: <Brain className="w-10 h-10 text-purple-400" />, title: "Аналитическое мышление", text: "Развиваем логику и алгоритмическое мышление — ключевые навыки для победы в олимпиаде." },
-              { icon: <Rocket className="w-10 h-10 text-green-400" />, title: "Поступление в топ-вузы", text: "Победа в НТО даёт льготы при поступлении в ведущие технические университеты страны." },
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                className="p-8 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-all hover:-translate-y-2"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.15, duration: 0.6 }}
-              >
-                <div className="mb-4">{item.icon}</div>
-                <h3 className="text-2xl font-bold mb-3">{item.title}</h3>
-                <p className="text-gray-400">{item.text}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ПРЕПОДАВАТЕЛИ */}
       <section className="py-24 bg-[#0F1523]">
         <div className="container mx-auto px-6">
@@ -324,7 +289,7 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {[
               { name: "Мигунова Анастасия", role: "Учитель информатики", img: "/images/teacher1.jpg" },
-              { name: "Ковалева Аманда", role: "Преподаватель русского и математики", img: "/images/teacher2.jpg" },
+              { name: "Ковалева Аманда", role: "Преподаватель русского языка и математики", img: "/images/teacher2.jpg" },
             ].map((teacher, i) => (
               <motion.div
                 key={i}
