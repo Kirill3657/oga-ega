@@ -145,7 +145,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ПРЕИМУЩЕСТВА (только 3) */}
+      {/* ПРЕИМУЩЕСТВА */}
       <section id="advantages" className="py-12 sm:py-24">
         <div className="container mx-auto px-4 sm:px-6">
           <motion.h2
@@ -334,7 +334,7 @@ export default function LandingPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <p className="text-sm sm:text-base">При покупке до 30.01</p>
+              <p className="text-sm sm:text-base">При покупке до 30.09</p>
               <div className="text-5xl sm:text-6xl md:text-7xl font-black text-yellow-400 my-4">-1000 ₽</div>
               <p className="text-sm sm:text-base">на каждый месяц обучения</p>
             </motion.div>
