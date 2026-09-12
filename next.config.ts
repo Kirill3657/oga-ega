@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   images: {
     // Разрешаем оба формата. Если AVIF всё ещё 400 — оставь только "image/webp".
-    formats: ["image/webp"],
+    formats: ["image/avif"],
     // Локальные картинки из /public отдаются как есть, но на всякий случай:
     remotePatterns: [],
     // Минимальные размеры, которые Next будет генерить
