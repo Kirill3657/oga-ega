@@ -172,7 +172,7 @@ export default function LandingPage() {
                 transition={{ delay: i * 0.1, duration: 0.6 }}
               >
                 <div className="relative h-32 sm:h-40 overflow-hidden">
-                  <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
+                  <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-500" unoptimized />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 </div>
                 <div className="p-4 sm:p-6">
