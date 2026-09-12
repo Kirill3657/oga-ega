@@ -160,7 +160,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {[
               { title: "До 10 баллов к ЕГЭ", desc: "Дополнительные баллы", img: "/images/advantage0.avif" },
-              { title: "Преподаватели", desc: "Недавние выпускники", img: "/images/advantage1.jpg" },
+              { title: "Преподаватели", desc: "Недавние выпускники", img: "/images/advantage1.avif" },
               { title: "Методики Москвы", desc: "Лучшего учебного центра", img: "/images/advantage2.avif" },
             ].map((item, i) => (
               <motion.div
