@@ -160,7 +160,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {[
               { title: "До 10 баллов к ЕГЭ", desc: "Дополнительные баллы", img: "/images/advantage0.avif" },
-              { title: "Преподаватели", desc: "Недавние выпускники", img: "/images/advantage1.avif" },
+              { title: "Преподаватели", desc: "Недавние выпускники", img: "/images/advantage1.jpg" },
               { title: "Методики Москвы", desc: "Лучшего учебного центра", img: "/images/advantage2.avif" },
             ].map((item, i) => (
               <motion.div
@@ -172,7 +172,7 @@ export default function LandingPage() {
                 transition={{ delay: i * 0.1, duration: 0.6 }}
               >
                 <div className="relative h-32 sm:h-40 overflow-hidden">
-                  <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-500" unoptimized />
+                  <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 </div>
                 <div className="p-4 sm:p-6">
@@ -297,14 +297,20 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.2, duration: 0.6 }}
               >
-                <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-white/20 bg-gray-800 flex items-center justify-center">
+                <div className="shrink-0 w-16 h-16 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-white/20 bg-gray-800 flex items-center justify-center">
                   {teacher.img ? (
-                    <Image src={teacher.img} alt={teacher.name} width={100} height={100} className="object-cover" />
+                    <Image
+                      src={teacher.img}
+                      alt={teacher.name}
+                      width={100}
+                      height={100}
+                      className="object-cover w-full h-full"
+                    />
                   ) : (
                     <Star className="w-8 h-8 sm:w-10 sm:h-10 text-gray-500" />
                   )}
                 </div>
-                <div>
+                <div className="min-w-0">
                   <h3 className="text-lg sm:text-2xl font-bold">{teacher.name}</h3>
                   <p className="text-cyan-400 mt-1 text-sm sm:text-base">{teacher.role}</p>
                 </div>
