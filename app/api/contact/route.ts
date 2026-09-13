@@ -1,26 +1,24 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-// Инициализируем Resend с API ключом из переменных окружения
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: Request) {
   try {
     const { name, phone, message } = await request.json();
 
-    // Проверяем наличие API ключа
     if (!process.env.RESEND_API_KEY) {
-      return NextResponse.json({ ok: false, error: 'API ключ Resend не настроен' }, { status: 500 });
+      return NextResponse.json({ ok: false, error: 'RESEND_API_KEY не настроен' }, { status: 500 });
+    }
+    if (!process.env.EMAIL) {
+      return NextResponse.json({ ok: false, error: 'EMAIL не настроен' }, { status: 500 });
     }
 
-    // Отправляем письмо
-    const { data, error } = await resend.emails.send({
-      // Важно: Если у вас нет своего домена, используйте onboarding@resend.dev для теста
-      // Если у вас есть верифицированный домен (например, ваш-домен.ру), укажите его здесь
-      from: 'Учи.ру <hello@mail.engelsuchi64.ru>', 
-      to: ['wwwkirillstarcraft@gmail.com'], // Замените на реальную почту заказчика!
+    const { error } = await resend.emails.send({
+      from: 'Учи.ру <hello@mail.engelsuchi64.ru>',
+      to: [process.env.EMAIL],
       subject: 'Новая заявка с сайта',
-      replyTo: 'onboarding@resend.dev', // Куда отвечать клиенту (можно оставить как есть)
+      replyTo: 'onboarding@resend.dev',
       html: `
         <!DOCTYPE html>
         <html lang="ru">
@@ -34,27 +32,20 @@ export async function POST(request: Request) {
             <tr>
               <td align="center">
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px; background-color:#0F1523; border-radius:20px; overflow:hidden; border:1px solid rgba(255,255,255,0.08);">
-                  
-                  <!-- HEADER -->
+
                   <tr>
                     <td style="padding:32px 32px 24px 32px; background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #eab308 100%);">
-                      <h1 style="margin:0; font-size:22px; font-weight:900; color:#0B0F19; letter-spacing:-0.5px;">
-                        Учи.ру
-                      </h1>
-                      <p style="margin:6px 0 0 0; font-size:13px; color:rgba(11,15,25,0.75); font-weight:500;">
-                        Новая заявка с сайта
-                      </p>
+                      <h1 style="margin:0; font-size:22px; font-weight:900; color:#0B0F19; letter-spacing:-0.5px;">Учи.ру</h1>
+                      <p style="margin:6px 0 0 0; font-size:13px; color:rgba(11,15,25,0.75); font-weight:500;">Новая заявка с сайта</p>
                     </td>
                   </tr>
 
-                  <!-- BODY -->
                   <tr>
                     <td style="padding:32px;">
                       <p style="margin:0 0 24px 0; font-size:15px; line-height:1.6; color:#cbd5e1;">
                         Поступила новая заявка. Свяжитесь с клиентом в течение дня.
                       </p>
 
-                      <!-- ПОЛЕ: ИМЯ -->
                       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px; background-color:rgba(255,255,255,0.04); border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
                         <tr>
                           <td style="padding:14px 18px;">
@@ -64,7 +55,6 @@ export async function POST(request: Request) {
                         </tr>
                       </table>
 
-                      <!-- ПОЛЕ: ТЕЛЕФОН -->
                       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px; background-color:rgba(255,255,255,0.04); border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
                         <tr>
                           <td style="padding:14px 18px;">
@@ -76,7 +66,6 @@ export async function POST(request: Request) {
                         </tr>
                       </table>
 
-                      <!-- ПОЛЕ: КОММЕНТАРИЙ -->
                       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px; background-color:rgba(255,255,255,0.04); border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
                         <tr>
                           <td style="padding:14px 18px;">
@@ -86,7 +75,6 @@ export async function POST(request: Request) {
                         </tr>
                       </table>
 
-                      <!-- CTA -->
                       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                         <tr>
                           <td align="center">
@@ -99,7 +87,6 @@ export async function POST(request: Request) {
                     </td>
                   </tr>
 
-                  <!-- FOOTER -->
                   <tr>
                     <td style="padding:20px 32px 28px 32px; border-top:1px solid rgba(255,255,255,0.06);">
                       <p style="margin:0; font-size:12px; color:#64748b; line-height:1.5; text-align:center;">
