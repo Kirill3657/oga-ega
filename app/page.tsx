@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useInView, Variants } from "framer-motion";
-import { MapPin, Phone, Zap, Fingerprint, Users, Trophy, Rocket, Star, BookOpen, Code, Brain } from "lucide-react";
+import { MapPin, Phone, Zap, Fingerprint, Users, Trophy, Star, BookOpen, Menu, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
@@ -13,6 +13,41 @@ const fadeIn = (delay: number): Variants => ({
     transition: { delay, duration: 0.8, ease: "easeOut" },
   },
 });
+
+const navLinks = [
+  { href: "#advantages", label: "Преимущества" },
+  { href: "#format", label: "Формат" },
+  { href: "#teachers", label: "Преподаватели" },
+  { href: "#pricing", label: "Цены" },
+  { href: "#contacts", label: "Контакты" },
+];
+
+function AnimatedLogo() {
+  return (
+    <a href="#" className="logo">
+      <span aria-hidden className="logo__glow" />
+      <motion.span
+        className="logo__text"
+        initial={{ opacity: 0, x: -12 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+      >
+        Учи
+      </motion.span>
+      <motion.span
+        className="logo__accent"
+        initial={{ opacity: 0, scale: 0.6 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.25, duration: 0.5, type: "spring", stiffness: 220 }}
+        whileHover={{ scale: 1.08 }}
+      >
+        <span className="logo__dot">.</span>
+        ру
+      </motion.span>
+      <span aria-hidden className="logo__shimmer" />
+    </a>
+  );
+}
 
 function Counter({ target, label }: { target: number; label: string }) {
   const [count, setCount] = useState(0);
@@ -29,387 +64,519 @@ function Counter({ target, label }: { target: number; label: string }) {
   }, [isInView, target]);
 
   return (
-    <div ref={ref} className="text-center">
-      <div className="text-5xl md:text-6xl font-black text-cyan-400">{count.toLocaleString()}</div>
-      <p className="text-gray-400 mt-2 text-lg">{label}</p>
+    <div ref={ref} className="stat">
+      <div className="stat__number">{count.toLocaleString()}</div>
+      <p className="stat__label">{label}</p>
     </div>
   );
 }
 
-async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-  e.preventDefault();
-  const form = e.currentTarget;
-  const formData = new FormData(form);
-  const statusEl = form.querySelector("#form-status");
-  if (statusEl) statusEl.textContent = "Отправка...";
+export default function LandingPage() {
+  const [selectedPlan, setSelectedPlan] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  try {
-    const res = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: formData.get("name"),
-        phone: formData.get("phone"),
-        message: formData.get("message"),
-      }),
-    });
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const statusEl = form.querySelector("#form-status") as HTMLElement | null;
+    if (statusEl) {
+      statusEl.textContent = "Отправка...";
+      statusEl.className = "form__status";
+    }
 
-    if (res.ok) {
-      form.reset();
-      if (statusEl) {
-        statusEl.textContent = "Заявка отправлена!";
-        statusEl.className = "text-green-400 text-center";
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.get("name"),
+          phone: formData.get("phone"),
+          message: formData.get("message"),
+        }),
+      });
+
+      if (res.ok) {
+        form.reset();
+        setSelectedPlan("");
+        if (statusEl) {
+          statusEl.textContent = "Заявка отправлена!";
+          statusEl.className = "form__status form__status--success";
+        }
+      } else {
+        if (statusEl) {
+          statusEl.textContent = "Ошибка. Попробуйте ещё раз.";
+          statusEl.className = "form__status form__status--error";
+        }
       }
-    } else {
+    } catch {
       if (statusEl) {
         statusEl.textContent = "Ошибка. Попробуйте ещё раз.";
-        statusEl.className = "text-red-400 text-center";
+        statusEl.className = "form__status form__status--error";
       }
     }
-  } catch {
-    if (statusEl) {
-      statusEl.textContent = "Ошибка. Попробуйте ещё раз.";
-      statusEl.className = "text-red-400 text-center";
-    }
   }
-}
 
-export default function LandingPage() {
+  const selectPlan = (plan: string) => {
+    setSelectedPlan(plan);
+    document.getElementById("form")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
   return (
-    <main className="min-h-screen bg-[#0B0F19] text-white font-sans overflow-x-hidden">
-      {/* HERO */}
-      <section className="relative min-h-screen flex items-center justify-center py-12 px-4 sm:px-6">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/20 blur-[120px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/20 blur-[120px] rounded-full pointer-events-none" />
-        <motion.div
-          className="container mx-auto grid md:grid-cols-2 gap-12 items-center"
-          initial="hidden"
-          animate="visible"
-        >
-          <motion.div variants={fadeIn(0)}>
-            <h1 className="text-4xl sm:text-5xl md:text-7xl font-black leading-tight">
-              Подготовка к{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-yellow-400">
-                ОГЭ, ЕГЭ, ВПР
-              </span>
-            </h1>
-            <p className="mt-4 text-lg sm:text-xl md:text-2xl text-gray-400">Учи.ру — твой путь к максимальным баллам!</p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-4">
-              <a href="#contacts" className="btn-primary">Записаться</a>
-              <a href="#advantages" className="btn-outline">Узнать больше</a>
-            </div>
-          </motion.div>
-          <motion.div variants={fadeIn(0.3)} className="relative mt-12 md:mt-0">
-            <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
-              <Image src="/images/hero.avif" alt="Учебный процесс" width={600} height={400} className="object-cover w-full h-full" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-            </div>
-            <div className="absolute -top-6 -right-6 text-yellow-400 animate-bounce"><Zap size={40} className="sm:w-12 sm:h-12 md:w-14 md:h-14" /></div>
-            <div className="absolute -bottom-6 -left-6 text-cyan-400 animate-pulse"><Fingerprint size={40} className="sm:w-12 sm:h-12 md:w-14 md:h-14" /></div>
-            <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl px-4 py-3 sm:px-6 sm:py-4 text-center shadow-xl">
-              <h2 className="text-xl sm:text-2xl font-bold">Учи.ру</h2>
-              <p className="text-gray-300 text-xs sm:text-sm">г. Энгельс, ул. Тельмана 14А</p>
-            </div>
-          </motion.div>
-        </motion.div>
-      </section>
+    <>
+      {/* HEADER */}
+      <header className="header">
+        <div className="container header__inner">
+          <AnimatedLogo />
 
-      {/* МИССИЯ И ЦИФРЫ */}
-      <section className="py-12 sm:py-24 bg-[#0F1523]">
-        <div className="container mx-auto px-4 sm:px-6">
-          <motion.h2
-            className="text-3xl sm:text-4xl md:text-5xl font-black text-center mb-12"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeIn(0)}
-          >
-            Мы — <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">международная сеть</span>
-          </motion.h2>
-          <motion.p
-            className="text-lg sm:text-xl text-gray-300 text-center max-w-4xl mx-auto mb-12 sm:mb-16"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeIn(0.2)}
-          >
-            Обучаем детей более 7 лет. Через наши программы прошло более{" "}
-            <span className="text-cyan-400 font-bold">16 000 детей</span>. Мы единственные, кто даёт
-            детям возможность получить <span className="text-yellow-400 font-bold">до 10 баллов</span> к результатам ЕГЭ.
-          </motion.p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-            <Counter target={16000} label="выпускников" />
-            <Counter target={7} label="лет опыта" />
-            <Counter target={10} label="баллов к ЕГЭ" />
+          <nav className="header__nav">
+            {navLinks.map((l) => (
+              <a key={l.href} href={l.href} className="header__nav-link">
+                {l.label}
+              </a>
+            ))}
+          </nav>
+
+          <div className="header__actions">
+            <a href="#pricing" className="header__cta">Записаться</a>
+            <button
+              className="header__burger"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Меню"
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
         </div>
-      </section>
 
-      {/* ПРЕИМУЩЕСТВА */}
-      <section id="advantages" className="py-12 sm:py-24">
-        <div className="container mx-auto px-4 sm:px-6">
-          <motion.h2
-            className="text-3xl sm:text-4xl md:text-5xl font-black text-center mb-12 sm:mb-16"
+        {mobileMenuOpen && (
+          <div className="mobile-menu">
+            <nav className="container mobile-menu__inner">
+              {navLinks.map((l) => (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="mobile-menu__link"
+                >
+                  {l.label}
+                </a>
+              ))}
+              <a
+                href="#pricing"
+                onClick={() => setMobileMenuOpen(false)}
+                className="mobile-menu__cta"
+              >
+                Записаться
+              </a>
+            </nav>
+          </div>
+        )}
+      </header>
+
+      <main className="main">
+        {/* HERO */}
+        <section className="hero">
+          <div className="hero__glow hero__glow--cyan" />
+          <div className="hero__glow hero__glow--yellow" />
+          <motion.div
+            className="container hero__grid"
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeIn(0)}
+            animate="visible"
           >
-            Наши <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">преимущества</span>
-          </motion.h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {[
-              { title: "До 10 баллов к ЕГЭ", desc: "Дополнительные баллы", img: "/images/advantage0.avif" },
-              { title: "Преподаватели", desc: "Недавние выпускники", img: "/images/advantage1.avif" },
-              { title: "Методики Москвы", desc: "Лучшего учебного центра", img: "/images/advantage2.avif" },
-            ].map((item, i) => (
+            <motion.div variants={fadeIn(0)}>
+              <h1 className="hero__title">
+                Подготовка к{" "}
+                <span className="grad-text grad-text--cyan-blue-yellow">
+                  ОГЭ, ЕГЭ, ВПР
+                </span>
+              </h1>
+              <p className="hero__subtitle">Учи.ру — твой путь к максимальным баллам!</p>
+              <div className="hero__buttons">
+                <a href="#pricing" className="btn btn-primary">Записаться</a>
+                <a href="#advantages" className="btn btn-outline">Узнать больше</a>
+              </div>
+            </motion.div>
+            <motion.div variants={fadeIn(0.3)} className="hero__visual">
+              <div className="hero__image-wrap">
+                <Image src="/images/hero.avif" alt="Учебный процесс" width={600} height={400} className="hero__image" />
+                <div className="hero__image-overlay" />
+              </div>
+              <div className="hero__icon hero__icon--top"><Zap size={48} /></div>
+              <div className="hero__icon hero__icon--bottom"><Fingerprint size={48} /></div>
+              <div className="hero__badge">
+                <h2 className="hero__badge-title">Учи.ру</h2>
+                <p className="hero__badge-text">г. Энгельс, ул. Тельмана 14А</p>
+              </div>
+            </motion.div>
+          </motion.div>
+        </section>
+
+        {/* МИССИЯ И ЦИФРЫ */}
+        <section className="section section--alt">
+          <div className="container">
+            <motion.h2
+              className="section-title"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeIn(0)}
+            >
+              Мы — <span className="grad-text grad-text--yellow-orange">международная сеть</span>
+            </motion.h2>
+            <motion.p
+              className="mission__text"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeIn(0.2)}
+            >
+              Обучаем детей более 7 лет. Через наши программы прошло более{" "}
+              <span className="mission__accent-cyan">16 000 детей</span>. Мы единственные, кто даёт
+              детям возможность получить <span className="mission__accent-yellow">до 10 баллов</span> к результатам ЕГЭ.
+            </motion.p>
+            <div className="stats">
+              <Counter target={16000} label="выпускников" />
+              <Counter target={7} label="лет опыта" />
+              <Counter target={10} label="баллов к ЕГЭ" />
+            </div>
+          </div>
+        </section>
+
+        {/* ПРЕИМУЩЕСТВА */}
+        <section id="advantages" className="section">
+          <div className="container">
+            <motion.h2
+              className="section-title"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeIn(0)}
+            >
+              Наши <span className="grad-text grad-text--yellow-orange">преимущества</span>
+            </motion.h2>
+            <div className="adv-grid">
+              {[
+                { title: "До 10 баллов к ЕГЭ", desc: "Дополнительные баллы", img: "/images/advantage0.avif" },
+                { title: "Преподаватели", desc: "Недавние выпускники", img: "/images/advantage1.avif" },
+                { title: "Методики Москвы", desc: "Лучшего учебного центра", img: "/images/advantage2.avif" },
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  className="adv-card"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1, duration: 0.6 }}
+                >
+                  <div className="adv-card__image-wrap">
+                    <Image src={item.img} alt={item.title} fill className="adv-card__image" />
+                    <div className="adv-card__image-overlay" />
+                  </div>
+                  <div className="adv-card__body">
+                    <div className="adv-card__number">{i + 1}</div>
+                    <h3 className="adv-card__title">{item.title}</h3>
+                    <p className="adv-card__desc">{item.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* КАК ПРОХОДЯТ ЗАНЯТИЯ */}
+        <section id="format" className="section section--alt">
+          <div className="container format__grid">
+            <motion.div
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+            >
+              <h2 className="format__title">Формат, который действительно работает</h2>
+              <div className="format__text">
+                <p>Занятия проходят <span className="accent-yellow">раз в неделю по 2 часа</span>. Преподаватели сами недавно сдавали экзамены, поэтому подготовка идёт «на языке» ребёнка.</p>
+                <p>Ведём подготовку по <span className="accent-cyan">русскому языку, математике и информатике</span>.</p>
+                <p>У нас <span className="accent-green">микро-группы до 10 человек</span> — это позволяет ребёнку усваивать материал в умеренном темпе, а преподаватель подходит к каждому ученику индивидуально.</p>
+              </div>
+            </motion.div>
+            <motion.div
+              className="format__image-wrap"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+            >
+              <Image src="/images/students.avif" alt="Занятия" width={800} height={600} className="format__image" />
+              <div className="format__image-overlay" />
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ПОЧЕМУ МЫ */}
+        <section className="section">
+          <div className="container">
+            <motion.h2
+              className="section-title"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeIn(0)}
+            >
+              Почему стоит учиться <span className="grad-text grad-text--cyan-green">именно у нас?</span>
+            </motion.h2>
+            <div className="why-grid">
+              {[
+                { icon: <BookOpen />, color: "var(--yellow)", title: "Формат старшего брата", text: "Обучение не как в школе — как будто занимается старший брат. Для ребёнка это отличная, не перегруженная занятость на лето." },
+                { icon: <Users />, color: "var(--cyan)", title: "Микро-группы до 10", text: "Каждому ученику уделяется внимание, материал усваивается в комфортном темпе, преподаватель всегда рядом." },
+                { icon: <Trophy />, color: "var(--green)", title: "Единственные в РФ", text: "Мы — единственная школа в РФ, кто проводит каждый год хакатон, проходя который дети получают дополнительные баллы к ЕГЭ." },
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  className="why-card"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.15, duration: 0.6 }}
+                >
+                  <div className="why-card__icon" style={{ color: item.color }}>{item.icon}</div>
+                  <h3 className="why-card__title">{item.title}</h3>
+                  <p className="why-card__text">{item.text}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ХАКАТОН */}
+        <section className="section section--alt">
+          <div className="container">
+            <motion.div
+              className="hackathon__inner"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+            >
+              <div className="hackathon__glow" />
+              <h2 className="hackathon__title">Хакатон — наш фирменный формат!</h2>
+              <p className="hackathon__text">
+                Каждый год мы проводим собственный хакатон. Он проходит в рамках{" "}
+                <strong>конкурса талантов НТО</strong> и даёт ученикам{" "}
+                <strong>до 10 дополнительных баллов к ЕГЭ</strong> — это уникальная возможность заявить о себе!
+              </p>
+              <a href="#contacts" className="hackathon__cta">Узнать подробнее</a>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ПРЕПОДАВАТЕЛИ */}
+        <section id="teachers" className="section section--alt">
+          <div className="container">
+            <motion.h2
+              className="section-title"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeIn(0)}
+            >
+              Наши <span className="grad-text grad-text--pink-red">преподаватели</span>
+            </motion.h2>
+            <div className="teachers-grid">
+              {[
+                { name: "Мигунова Анастасия", role: "Учитель информатики", img: "/images/teacher1.jpg" },
+                { name: "Ковалева Аманда", role: "Преподаватель русского языка и математики", img: "/images/teacher2.jpg" },
+              ].map((teacher, i) => (
+                <motion.div
+                  key={i}
+                  className="teacher-card"
+                  initial={{ opacity: 0, x: i === 0 ? -40 : 40 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.2, duration: 0.6 }}
+                >
+                  <div className="teacher-avatar">
+                    {teacher.img ? (
+                      <Image
+                        src={teacher.img}
+                        alt={teacher.name}
+                        width={100}
+                        height={100}
+                        className="teacher-avatar__img"
+                      />
+                    ) : (
+                      <Star size={32} />
+                    )}
+                  </div>
+                  <div className="teacher-info">
+                    <h3 className="teacher-name">{teacher.name}</h3>
+                    <p className="teacher-role">{teacher.role}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ЦЕНЫ */}
+        <section id="pricing" className="section">
+          <div className="container">
+            <motion.h2
+              className="section-title section-title--tight"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeIn(0)}
+            >
+              Подготовка по{" "}
+              <span className="grad-text grad-text--cyan-green">1, 2 или 3 предметам</span>
+            </motion.h2>
+            <motion.p
+              className="section-subtitle"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeIn(0.1)}
+            >
+              4 занятия по 2 часа. Чем больше предметов — тем выгоднее.
+            </motion.p>
+            <div className="pricing-grid">
+              {/* 1 ПРЕДМЕТ */}
               <motion.div
-                key={i}
-                className="group bg-white/5 rounded-2xl overflow-hidden border border-white/10 hover:bg-white/10 transition-all hover:-translate-y-2"
+                className="plan"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.6 }}
+                transition={{ duration: 0.6 }}
               >
-                <div className="relative h-32 sm:h-40 overflow-hidden">
-                  <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                </div>
-                <div className="p-4 sm:p-6">
-                  <div className="text-2xl sm:text-3xl font-black text-yellow-400">{i + 1}</div>
-                  <h3 className="mt-2 text-lg sm:text-xl font-bold">{item.title}</h3>
-                  <p className="mt-1 text-sm sm:text-base text-gray-400">{item.desc}</p>
-                </div>
+                <p className="plan__label">1 предмет</p>
+                <p className="plan__price">5 800 ₽</p>
+                <p className="plan__note">4 занятия по 2 часа</p>
+                <ul className="plan__list">
+                  <li>✓ Русский язык</li>
+                  <li>✓ Математика</li>
+                  <li>✓ Информатика</li>
+                </ul>
+                <button
+                  type="button"
+                  onClick={() => selectPlan("1 предмет — 5 800 ₽")}
+                  className="btn btn-primary"
+                >
+                  Записаться
+                </button>
               </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* КАК ПРОХОДЯТ ЗАНЯТИЯ */}
-      <section className="py-12 sm:py-24 bg-[#0F1523]">
-        <div className="container mx-auto px-4 sm:px-6 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-          >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-8">Формат, который действительно работает</h2>
-            <div className="space-y-4 sm:space-y-6 text-lg sm:text-xl text-gray-300">
-              <p>Занятия проходят <span className="text-yellow-400 font-bold">раз в неделю по 2 часа</span>. Преподаватели сами недавно сдавали экзамены, поэтому подготовка идёт «на языке» ребёнка.</p>
-              <p>Ведём подготовку по <span className="text-cyan-400 font-bold">математике, русскому языку и информатике</span>.</p>
-              <p>У нас <span className="text-green-400 font-bold">микро-группы до 10 человек</span> — это позволяет ребёнку усваивать материал в умеренном темпе, а преподаватель подходит к каждому ученику индивидуально.</p>
+              {/* 2 ПРЕДМЕТА */}
+              <motion.div
+                className="plan plan--featured"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1, duration: 0.6 }}
+              >
+                <div className="plan__badge">Популярный</div>
+                <p className="plan__label">2 предмета</p>
+                <p className="plan__price">9 250 ₽</p>
+                <p className="plan__discount">Скидка 20%</p>
+                <ul className="plan__list">
+                  <li>✓ Любые два предмета</li>
+                  <li>✓ Экономия ~2 350 ₽</li>
+                  <li>✓ Хакатон + до 10 баллов к ЕГЭ</li>
+                </ul>
+                <button
+                  type="button"
+                  onClick={() => selectPlan("2 предмета — 9 250 ₽ (скидка 20%)")}
+                  className="btn btn-primary"
+                >
+                  Записаться
+                </button>
+              </motion.div>
+
+              {/* 3 ПРЕДМЕТА */}
+              <motion.div
+                className="plan"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+              >
+                <p className="plan__label">3 предмета</p>
+                <p className="plan__price">13 000 ₽</p>
+                <p className="plan__discount">Скидка 25%</p>
+                <ul className="plan__list">
+                  <li>✓ Все три предмета</li>
+                  <li>✓ Экономия ~4 400 ₽</li>
+                  <li>✓ Максимальная подготовка</li>
+                </ul>
+                <button
+                  type="button"
+                  onClick={() => selectPlan("3 предмета — 13 000 ₽ (скидка 25%)")}
+                  className="btn btn-primary"
+                >
+                  Записаться
+                </button>
+              </motion.div>
             </div>
-          </motion.div>
-          <motion.div
-            className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-          >
-            <Image src="/images/students.avif" alt="Занятия" width={800} height={600} className="object-cover w-full h-full" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-          </motion.div>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      {/* ПОЧЕМУ МЫ */}
-      <section className="py-12 sm:py-24">
-        <div className="container mx-auto px-4 sm:px-6">
+        {/* КОНТАКТЫ + ФОРМА */}
+        <section id="contacts" className="section contacts">
           <motion.h2
-            className="text-3xl sm:text-4xl md:text-5xl font-black text-center mb-12"
+            className="contacts__title"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeIn(0)}
           >
-            Почему стоит учиться <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-green-400">именно у нас?</span>
+            Откройте для своего ребёнка мир самых{" "}
+            <br />
+            <span className="grad-text grad-text--cyan-green">перспективных профессий!</span>
           </motion.h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {[
-              { icon: <BookOpen className="w-8 h-8 sm:w-10 sm:h-10 text-yellow-400" />, title: "Формат старшего брата", text: "Обучение не как в школе — как будто занимается старший брат. Для ребёнка это отличная, не перегруженная занятость на лето." },
-              { icon: <Users className="w-8 h-8 sm:w-10 sm:h-10 text-cyan-400" />, title: "Микро-группы до 10", text: "Каждому ученику уделяется внимание, материал усваивается в комфортном темпе, преподаватель всегда рядом." },
-              { icon: <Trophy className="w-8 h-8 sm:w-10 sm:h-10 text-green-400" />, title: "Единственные в РФ", text: "Мы — единственная школа в РФ, кто проводит каждый год хакатон, проходя который дети получают дополнительные баллы к ЕГЭ." },
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                className="p-6 sm:p-8 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-all hover:-translate-y-2"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.15, duration: 0.6 }}
-              >
-                <div className="mb-4">{item.icon}</div>
-                <h3 className="text-xl sm:text-2xl font-bold mb-3">{item.title}</h3>
-                <p className="text-gray-400 text-sm sm:text-base">{item.text}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ХАКАТОН */}
-      <section className="py-12 sm:py-24 bg-[#0F1523]">
-        <div className="container mx-auto px-4 sm:px-6">
           <motion.div
-            className="p-8 sm:p-10 md:p-14 rounded-3xl bg-gradient-to-r from-orange-500 to-red-500 text-center relative overflow-hidden"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            className="contacts__inner"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
           >
-            <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-6">Хакатон — наш фирменный формат!</h2>
-            <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto">
-              Каждый год мы проводим собственный хакатон. Проходя его, ученики решают реальные задачи и получают дополнительные баллы к ЕГЭ — это уникальная возможность заявить о себе!
+            <p className="contacts__item">
+              <MapPin className="contacts__icon-yellow" /> г. Энгельс, ул. Тельмана 14а
             </p>
-            <a href="#contacts" className="mt-8 inline-block px-6 sm:px-8 py-3 sm:py-4 bg-white text-red-500 font-bold rounded-full hover:bg-gray-100 transition-all">
-              Узнать подробнее
-            </a>
+            <p className="contacts__label">Детский центр "Учи.ру"</p>
+            <p className="contacts__phone">
+              <Phone className="contacts__icon-green" /> +7 (927)-161-98-04
+            </p>
+
+            <form id="form" onSubmit={handleSubmit} className="form">
+              <input
+                name="name"
+                type="text"
+                placeholder="Ваше имя"
+                required
+                className="form__input"
+              />
+              <input
+                name="phone"
+                type="tel"
+                placeholder="Номер телефона"
+                required
+                className="form__input"
+              />
+              <input
+                name="message"
+                type="text"
+                placeholder="Комментарий (необязательно)"
+                value={selectedPlan}
+                onChange={(e) => setSelectedPlan(e.target.value)}
+                className="form__input"
+              />
+              <button type="submit" className="btn btn-cta">Записаться на бесплатное занятие</button>
+              <div id="form-status" className="form__status"></div>
+            </form>
           </motion.div>
-        </div>
-      </section>
-
-      {/* ПРЕПОДАВАТЕЛИ */}
-      <section className="py-12 sm:py-24 bg-[#0F1523]">
-        <div className="container mx-auto px-4 sm:px-6">
-          <motion.h2
-            className="text-3xl sm:text-4xl md:text-5xl font-black text-center mb-12"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeIn(0)}
-          >
-            Наши <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-red-500">преподаватели</span>
-          </motion.h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
-            {[
-              { name: "Мигунова Анастасия", role: "Учитель информатики", img: "/images/teacher1.jpg" },
-              { name: "Ковалева Аманда", role: "Преподаватель русского языка и математики", img: "/images/teacher2.jpg" },
-            ].map((teacher, i) => (
-              <motion.div
-                key={i}
-                className="flex items-center gap-4 sm:gap-6 p-4 sm:p-6 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-all hover:-translate-y-2"
-                initial={{ opacity: 0, x: i === 0 ? -40 : 40 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.2, duration: 0.6 }}
-              >
-                <div className="shrink-0 w-16 h-16 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-white/20 bg-gray-800 flex items-center justify-center">
-                  {teacher.img ? (
-                    <Image
-                      src={teacher.img}
-                      alt={teacher.name}
-                      width={100}
-                      height={100}
-                      className="object-cover w-full h-full"
-                    />
-                  ) : (
-                    <Star className="w-8 h-8 sm:w-10 sm:h-10 text-gray-500" />
-                  )}
-                </div>
-                <div className="min-w-0">
-                  <h3 className="text-lg sm:text-2xl font-bold">{teacher.name}</h3>
-                  <p className="text-cyan-400 mt-1 text-sm sm:text-base">{teacher.role}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ЦЕНЫ */}
-      <section className="py-12 sm:py-24">
-        <div className="container mx-auto px-4 sm:px-6">
-          <motion.h2
-            className="text-3xl sm:text-4xl md:text-5xl font-black text-center mb-12 sm:mb-16"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeIn(0)}
-          >
-            Сейчас можно купить со скидкой!
-          </motion.h2>
-          <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-0">
-            <motion.div
-              className="bg-white/5 p-8 sm:p-12 text-center rounded-t-3xl md:rounded-l-3xl md:rounded-tr-none border border-white/10 md:border-r-0"
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              <p className="text-sm sm:text-base">При покупке до 30.09</p>
-              <div className="text-5xl sm:text-6xl md:text-7xl font-black text-yellow-400 my-4">-1000 ₽</div>
-              <p className="text-sm sm:text-base">на каждый месяц обучения</p>
-            </motion.div>
-            <motion.div
-              className="bg-white/5 p-8 sm:p-12 text-center rounded-b-3xl md:rounded-r-3xl md:rounded-bl-none border border-white/10"
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              <p className="text-3xl sm:text-4xl text-gray-400 line-through">6 800 р.</p>
-              <p className="text-4xl sm:text-5xl md:text-6xl font-black text-green-400 my-4">5 800 р.</p>
-              <a href="#contacts" className="btn-green">Купить со скидкой</a>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* КОНТАКТЫ + ФОРМА */}
-      <section id="contacts" className="py-12 sm:py-24 text-center">
-        <motion.h2
-          className="text-3xl sm:text-4xl md:text-6xl font-black leading-tight px-4"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={fadeIn(0)}
-        >
-          Откройте для своего ребёнка мир самых{" "}
-          <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-green-400">перспективных профессий!</span>
-        </motion.h2>
-        <motion.div
-          className="mt-8 sm:mt-12 flex flex-col items-center gap-4 sm:gap-6 px-4"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-        >
-          <p className="flex items-center gap-2 text-base sm:text-xl"><MapPin className="text-yellow-400" /> г. Энгельс, ул. Тельмана 14а</p>
-          <p className="text-gray-400 text-sm sm:text-base">Детский центр "Учи.ру"</p>
-          <p className="text-xl sm:text-2xl font-bold flex items-center gap-2"><Phone className="text-green-400" /> +7 (927)-161-98-04</p>
-
-          {/* ФОРМА ЗАЯВКИ */}
-          <form onSubmit={handleSubmit} className="mt-6 sm:mt-8 flex flex-col gap-3 sm:gap-4 max-w-md w-full mx-auto px-4">
-            <input
-              name="name"
-              type="text"
-              placeholder="Ваше имя"
-              required
-              className="px-4 sm:px-5 py-3 bg-white/10 border border-white/20 rounded-full text-white placeholder-gray-400 outline-none focus:border-cyan-400 transition-colors"
-            />
-            <input
-              name="phone"
-              type="tel"
-              placeholder="Номер телефона"
-              required
-              className="px-4 sm:px-5 py-3 bg-white/10 border border-white/20 rounded-full text-white placeholder-gray-400 outline-none focus:border-cyan-400 transition-colors"
-            />
-            <input
-              name="message"
-              type="text"
-              placeholder="Комментарий (необязательно)"
-              className="px-4 sm:px-5 py-3 bg-white/10 border border-white/20 rounded-full text-white placeholder-gray-400 outline-none focus:border-cyan-400 transition-colors"
-            />
-            <button type="submit" className="btn-cta">Записаться на бесплатное занятие</button>
-            <div id="form-status" className="text-center"></div>
-          </form>
-        </motion.div>
-      </section>
-    </main>
+        </section>
+      </main>
+    </>
   );
 }
