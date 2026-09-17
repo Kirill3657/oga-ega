@@ -1,5 +1,10 @@
-import { App } from "./components/App";
+import { MotionProvider } from "./components/MotionProvider";
+import { LandingPage } from "./components/LandingPage";
 
-export default function LandingPage() {
-  return <App />;
+export default function Page() {
+  return (
+    <MotionProvider>
+      <LandingPage />
+    </MotionProvider>
+  );
 }
